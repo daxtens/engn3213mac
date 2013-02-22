@@ -1,0 +1,176 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{a4wide}              % Wide paper
+\usepackage{graphicx}
+\usepackage[parfill]{parskip}
+
+%
+% For nicer captions
+%
+% Valid options (between []) are:
+%
+% Indentation: hang, center, centerlast, nooneline
+% Size: scriptsize, small, normalsize, large, Large
+% Style: up, it, sl, sc, md, bf, rm, sf, tt
+%
+\usepackage[hang,small,bf]{caption}
+
+\usepackage{hyperref}
+
+\usepackage{palatino}
+\usepackage{mathpazo}
+
+\usepackage{enumerate}
+
+% start sections on new pages.
+%\let\stdsection\section
+%\renewcommand\section{\newpage\stdsection}
+
+\title{ENGN3212 software on Macs}
+\author{Daniel Axtens}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+
+
+This document is a work in progress. I will attempt to keep it up to date over the semester as I work through the labs. Issues, suggestions, and contributions are welcome at \url{https://github.com/daxtens/engn3213mac}. 
+
+The document follows the structure of the software info document provided.
+
+These instructions assume you've got the most recent version of Mac OS X (at the time of writing, 10.8). Older versions may require slightly more leg work.
+
+\subsection{Before you begin}
+\label{sec:before-you-begin}
+
+\begin{enumerate}[Step 1]
+\item Install Xcode from the App Store: \url{https://itunes.apple.com/au/app/xcode/id497799835?mt=12}. It's a free IDE and includes all the files (compilers, etc.) that you need to build the rest of the packages required.
+\item Install the Xcode Command Line Tools from within Xcode: in the menu, go to  Xcode $\to$ Preferences..., then Downloads, and install them:
+
+  \includegraphics[scale=0.5]{xcodeclt}
+\item Install XQuartz (X11): \url{http://xquartz.macosforge.org/landing/}. This provides the window/graphics system upon which programs written for Linux depend.
+\item Install a Mac package manager. The provided notes suggest MacPorts - having tried MacPorts, Fink and Homebrew over the years, my current recommendation is Homebrew: \url{http://mxcl.github.com/homebrew/}.
+
+To save you the trouble of scrolling all the way down to the bottom of the page, you can install Homebrew by running the following at a terminal prompt:
+\begin{verbatim}
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+\end{verbatim}
+\end{enumerate}
+
+\newpage
+\section{Xilinx ISE WebPACK}
+\label{sec:xilinx-ise-webpack}
+
+Because this software is not required, I have skipped this.
+
+\section{Icarus Verilog}
+\label{sec:icarus-verilog}
+
+At a terminal, run:
+\begin{verbatim}
+brew install icarus-verilog
+\end{verbatim}
+
+
+\section{Text Editor}
+\label{sec:text-editor}
+
+TextEdit is supplied with Mac OS X, not Xcode, and is \emph{not} a suitable programming editor.
+
+You have several options:
+\begin{itemize}
+\item XCode has a built in editor, and while it does know about C, it does not understand Verilog. Just run the XCode application which you've already installed. (Don't create a new project: go to the File menu $\to$ New $\to$ File..., then go to OS X C and C++, and create a C file.)
+\item \texttt{jedit} is an option, although I've never used it.
+\item If you intend to do a lot of development, you should probably learn either \texttt{vim} or \texttt{emacs}. There is plenty of material on the internet about the relative merits of the two.
+
+If you wish to use \texttt{vim}, you should download MacVim, likewise for \texttt{emacs} you should download Aquamacs. 
+
+As an Aquamacs user, I can attest that it understands Verilog and so will do proper syntax highlighting and indenting. I have no idea about MacVim.
+
+Be warned that both \texttt{vim} and \texttt{emacs} have \emph{steep} learning curves, as shown somewhat humorously in \autoref{fig:editor-curves}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.7]{curves.jpg}
+  \caption{Learning curves of some common text editors. Source unknown: found at
+ \url{http://www.terminally-incoherent.com/blog/2006/08/01/text-editor-learning-curves/}.}
+  \label{fig:editor-curves}
+\end{figure}
+\end{itemize}
+
+\newpage~\newpage
+\section{GTKWave}
+\label{sec:gtkwave}
+
+At a terminal, run:
+\begin{verbatim}
+brew install gtkwave
+\end{verbatim}
+
+Installation will be a \emph{lengthy} process as the entire GTK+2 toolkit is downloaded and compiled. (In the order of an hour on my late 2008 laptop.)
+
+Ignore any caveats printed, they won't affect you.
+
+\section{Atmel Studio}
+\label{sec:atmel-studio}
+
+Not available for Macs. I believe there are equivalents, but I haven't investigated.
+
+\section{C compilers and development environments}
+\label{sec:c-comp-devel}
+
+\subsection{Quick and dirty: command line}
+\label{sec:cli}
+
+If you are using a competent text editor and working on a very small project (1 file), it's probably fastest to skip an IDE altogether. Simply create your C file in your text editor of choice. Say you've called it \texttt{myfile.c}:
+
+\begin{verbatim}
+cd <directory with code>
+make CFLAGS="-g -Wall" myfile
+./myfile
+\end{verbatim}
+
+\texttt{make} will compile your C file into an executable of the same name, which you can run as shown. The \texttt{CFLAGS} part enables debugging information and warnings.
+
+\emph{Always compile with warnings enabled. Always. Always. Always.}
+
+Your text editor may also come with functionality to build and debug without leaving the editor (especially if your editor is a derivative of \texttt{emacs} or \texttt{vim}).
+
+\subsection{XCode}
+\label{sec:xcode}
+
+XCode is a huge, somewhat difficult to navigate program much better suited to creating large projects. However, should you wish to avoid the command line as much as possible, it is an option. 
+
+\begin{enumerate}
+\item Open XCode. You will be presented with the following:
+
+  \includegraphics[scale=0.4]{xcodestart}
+\item Click ``Create a new Xcode project'', and create a new Command Line Tool project:
+
+  \includegraphics[scale=0.4]{xcodenewproj}
+\item You'll be asked for some info. Disable Automatic Reference Counting, because you don't get that in embedded systems.
+
+  \includegraphics[scale=0.4]{xcodeopts}
+\item You'll be asked to save it somewhere. If you're wise, you'll let Xcode set up version control and learn how to use it.
+
+  \includegraphics[scale=0.4]{xcodesave}
+
+  \emph{For the sake of your own sanity, learn how to use version control.}
+\item Xcode generates some code for you, but you'll need to click on the file to see it. You get nice syntax highlighting, tabbing, autocomplete and so on.
+
+  \includegraphics[scale=0.4]{xcodeeditor}
+
+\item Hit ``Run'' to run your program. Output is displayed at the bottom.
+
+  \includegraphics[scale=0.4]{xcodeoutput}
+
+\end{enumerate}
+
+\subsection{Code::Blocks}
+\label{sec:code::blocks}
+
+Code::Blocks is an option, although given the other options available, I wouldn't use it. 
+
+\end{document}
+
